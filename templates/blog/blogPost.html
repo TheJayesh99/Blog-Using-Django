@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block title %}
+{{post.title}}
+{% endblock title %}
+{% comment %} {% block css %}
+.col-md-3
+{
+display: inline-block;
+margin-left:-4px;
+}
+.carousel-indicators .active {
+background-color: blue;
+}
+.col-md-3 img{
+width: 170px;
+height: 200px;
+}
+.carousel-indicators li {
+background-color: cadetblue;
+}
+body .carousel-indicator li{
+background-color: blue;
+}
+body .carousel-indicators{
+bottom: -18px;
+}
+body .carousel-control-prev-icon,
+body .carousel-control-next-icon{
+background-color: blue;
+}
+.carousel-control-prev,
+.carousel-control-next{
+top: auto;
+bottom: auto;
+padding-top: 100px;
+}
+body .no-padding{
+padding-left: 0,
+padding-right: 0;
+}
+{% endblock css %} {% endcomment %}
+{% block blog %}active{% endblock blog %}
+{% block body%}
+
+{% load humanize %}
+{% load extras %}
+<div class="container">
+    <h3 class="pb-4 my-4 font-italic border-bottom">
+        From The iCoders
+    </h3>
+
+    <div class="blog-post">
+        <h2 class="blog-post-title">{{post.title|lower|capfirst}}</h2>
+        <p class="blog-post-meta">{{post.timestamp}} by <a href="/about">{{post.author|lower|capfirst}} </a><span class="badge badge-pill badge-dark light mx-2">{{post.viwes}} Views</span></p>
+
+        <p>{{post.content|safe}}</p>
+        <hr>
+    </div>
+</div>
+
+<!-- Comments Start Here -->
+
+<div class="container">
+    <h2>Comments ({{comments.count}}):</h2>
+    <div class="container my-3">
+        {% if user.is_authenticated %}
+        <form action="/blog/postComment" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group ">
+                <textarea class="form-control" name="comment" id="comment" rows="3"
+                    placeholder="Enter your comment here"></textarea>
+            </div>
+
+            <input type="hidden" name="postSno" value="{{post.sno}}">
+            <input type="hidden" name="parentSno" value="">
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% else %}
+        <i><b>Login to post comment</b></i>
+        {% endif %}
+
+
+    </div>
+
+
+
+    {% for comment in comments  %}
+
+
+    <div class="row my-4  border-bottom">
+
+        <div class="col-md-1">
+            <img src="/static/img/user.png " class="rounded mx-auto d-block w-100 p-2 ">
+        </div>
+        <div class="col-md-11"><b>{{comment.user.username}}</b> <span class="badge badge-secondary mx-2">
+                {{comment.timestamp | naturaltime}}</span>
+            <div> {{comment.comment}} </div>
+
+
+            <!-- Post replay start here -->
+
+
+            <div class="reply mx-0">
+                {% if user.is_authenticated %}
+                <button class="btn btn-primary" type="button" data-toggle="collapse"
+                    data-target="#replybox{{comment.sno}}" aria-expanded="false"
+                    aria-controls="replybox{{comment.sno}}">
+                    Reply
+                </button>
+
+                <div class="collapse" id="replybox{{comment.sno}}">
+                    <div class="card card-body">
+
+                        <form action="/blog/postComment" method="POST">
+                            {% csrf_token %}
+
+                            <div class="form-group ">
+                                <textarea class="form-control" name="comment" id="comment" rows="1"
+                                    placeholder="Enter your reply here"></textarea>
+                            </div>
+
+                            <input type="hidden" name="postSno" value="{{post.sno}}">
+                            <input type="hidden" name="parentSno" value="{{comment.sno}}">
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <button class="btn btn-primary" type="button" data-toggle="collapse"
+                    data-target="#replybox{{comment.sno}}" aria-expanded="false" aria-controls="replybox{{comment.sno}}"
+                    disabled>
+                    Login to reply
+                </button>
+                {% endif %}
+
+
+                <!-- reply displays here -->
+
+
+                <div class="replies my-2 mx-3">
+
+                    {% for reply in replyDict|get_val:comment.sno %}
+                    <div class="row my-4  border-left">
+
+                        <div class="col-md-1">
+                            <img src="/static/img/user.png " class="rounded mx-auto d-block w-100 p-2 ">
+                        </div>
+                        <div class="col-md-11"><b>{{reply.user.username}}</b> <span class="badge badge-secondary mx-2">
+                                {{reply.timestamp | naturaltime}}</span>
+                            <div> {{reply.comment}} </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock body  %}

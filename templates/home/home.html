@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+Home
+{% endblock title %}
+{% block home %}active{% endblock home %}
+{% block body %}
+<div class="container my-4">
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome To iCoder's</h1>
+        <p class="lead">Here we post some interesting blogs here</p>
+        <hr class="my-4">
+        <p>Which will make you fell refreshing ,creative , and more informative hope you will like it</p>
+        <a class="btn btn-primary btn-lg" href="/blog" role="button">Go To Blog</a>
+    </div>
+</div>
+<div class="container">
+<h3>Popular Blogs</h3>
+    {% for post in allpost  %}
+    {% if post.sno in showPosts %}
+    
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary">{{post.author|capfirst}}</strong>
+            <a href="/blog/{{post.slug}}" class="text-dark"><h3 class="mb-0"> {{post.title|capfirst}} </h3></a>
+            <div class="mb-1 text-muted"> {{post.timestamp}}<span class="badge badge-pill badge-light mx-2">{{post.viwes}} Views</span> </div>
+            <p class="card-text mb-auto">
+            <div class="preview">
+                    {{post.content|safe|truncatechars_html:400}}
+                </div>
+                </p>
+            <div>
+                <a href="/blog/{{post.slug}}" role="button" class=" btn btn-primary my-2">Continue reading</a>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+
+
+
+
+
+</div>
+
+{% block js %}
+<script>
+    let previews = document.getElementsByClassName('preview')
+    Array.from(previews).forEach((element) =>{
+     element.innerHTML = element.innerText;
+    })
+</script>
+{% endblock js %}
+
+{% endblock body  %}

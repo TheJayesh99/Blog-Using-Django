@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+blog
+{% endblock title %}
+
+{% block js %}
+<script>
+    let previews = document.getElementsByClassName('preview')
+    Array.from(previews).forEach((element) =>{
+     element.innerHTML = element.innerText;
+    })
+</script>
+{% endblock js %}
+{% block blog %}active{% endblock blog %}
+{% block body%}
+<div class="container my-4">
+    <h2>Coding Articles by iCoder's</h2>
+    {% for post in allpost  %}
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary">{{post.author|capfirst}}</strong>
+            <a href="/blog/{{post.slug}}" class="text-dark"><h3 class="mb-0"> {{post.title|capfirst}}</h3> </a>
+            <div class="mb-1 text-muted"> {{post.timestamp}} <span class="badge badge-pill badge-light mx-2">{{post.viwes}} Views</span></div>
+            <p class="card-text mb-auto">
+                <div class="preview">
+                    {{post.content|safe|truncatechars_html:400}}
+                </div>
+            </p>
+            <div>
+                <a href="/blog/{{post.slug}}" role="button" class=" btn btn-primary my-2">Continue reading</a>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock body  %}
+
+
+

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}
+blog
+{% endblock title %}
+{% block js %}
+<script>
+    let previews = document.getElementsByClassName('preview')
+    Array.from(previews).forEach((element) => {
+        element.innerHTML = element.innerText;
+    })
+</script>
+{% endblock js %}
+{% block body%}
+<div class="container my-4">
+    <h2>Your Search Results:</h2>
+    {% if allpost|length < 1 %}
+    Your search <b>{{query|truncatechars:50}}</b> did not match any documents.
+    <br>
+    Suggestions:
+    <ul>
+        <li>Make sure that all words are spelled correctly.</li>
+        <li>Try different keywords.</li>
+        <li>Try more general keywords.</li>
+    </ul>
+    {% else %}
+    {% for post in allpost  %}
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary">{{post.author}}</strong>
+            <h3 class="mb-0"> {{post.title}} </h3>
+            <div class="mb-1 text-muted"> {{post.timestamp}} </div>
+            <p class="card-text mb-auto">
+            <div class="preview">
+                {{post.content|safe|truncatechars_html:400}}
+            </div>
+            </p>
+            <div>
+                <a href="/blog/{{post.slug}}" role="button" class=" btn btn-primary my-2">Continue reading</a>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock body  %}
