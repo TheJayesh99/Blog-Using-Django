@@ -28,7 +28,7 @@ def BlogPost(request,slug):
     context = {'post':post,'allpost':allpost,'comments': comment,'replyDict':replyDict}
     post.viwes = post.viwes+1
     post.save()
-    return render(request,'blog/blogpost.html',context)
+    return render(request,'blog/blogPost.html',context)
 
 
 def postComment(request):
